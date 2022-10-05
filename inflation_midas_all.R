@@ -339,10 +339,16 @@ adf.test(residuals(eqb_1))
 accuracy_eqb_1_in <- rmse(inflation_cpi_full[2:n_train], aux_eqb_1_f)
 
 # testing long-term relationships 
-linearHypothesis(eqb_1, c("mls(y, 1, 1)=1", "mls(z, 1, 1)=0", "mls(x_agg, 0, 1)=0"))
+# linearHypothesis(eqb_1, c("mls(y, 1, 1)=1", "mls(z, 1, 1)=0", "mls(x_agg, 0, 1)=0"))
 
+mRestriction <- matrix(0, ncol = 5, nrow = 3)
+colnames(mRestriction) <- c("cons", "trend", "y", "z", "x")
+mRestriction[1,3] <- 1
+mRestriction[2,4] <- 1
+mRestriction[3,5] <- 1
+linearHypothesis(eqb_1, hypothesis.matrix = mRestriction, rhs = c(1,0,0))
 
-#-------- DUPLA DIFEREN?A
+#-------- DUPLA DIFERENÇA
 
 eqdd_1 <- lm(diff(y) ~ diff(mls(y, 1, 1)) + 
                diff(mls(z, 1, 1)) + 
@@ -358,8 +364,14 @@ adf.test(residuals(eqdd_1))
 accuracy_eqdd_1_in <- rmse(inflation_cpi_full[2:n_train], aux_eqdd_1_f1)
 
 # testing long-term relationships 
-linearHypothesis(eqdd_1, c("diff(mls(y, 1, 1))=1", "diff(mls(z, 1, 1))=0", "diff(mls(x_agg, 0, 1))=0"))
-#stargazer(eqdd_1)
+# linearHypothesis(eqdd_1, c("diff(mls(y, 1, 1))=1", "diff(mls(z, 1, 1))=0", "diff(mls(x_agg, 0, 1))=0"))
+
+mRestriction <- matrix(0, ncol = 4, nrow = 3)
+colnames(mRestriction) <- c("cons", "y", "z", "x")
+mRestriction[1,2] <- 1
+mRestriction[2,3] <- 1
+mRestriction[3,4] <- 1
+linearHypothesis(eqdd_1, mRestriction, c(1, 0, 0))
 
 #-------- MIDAS-DL ---
 
