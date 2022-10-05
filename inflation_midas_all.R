@@ -17,7 +17,7 @@ load_package<-function(x){
 }
 
 load_package('tseries')
-load_package('xlsx')
+# load_package('xlsx') # Biblioteca desnecessaria (faz uso do java que muitas vezes precisa atualizar)
 load_package('QRM')
 load_package('openxlsx')
 load_package('xts')
@@ -25,7 +25,7 @@ load_package('class')
 load_package('zoo')
 load_package('fBasics')
 load_package('qrmtools')
-load_package('fDMA') # NAO TEM MAIS!!!
+# load_package('fDMA') # NAO TEM MAIS!!! (porem nao é necessaria no codigo)
 load_package('TSA')
 load_package('roll')
 load_package('MTS')
@@ -115,7 +115,7 @@ if (country == "UK"){
   date_m <- date_m[date_m !="2015-03-31"]
   market_m_annual_full[time(market_m_annual_full) != "2015-03-02",]
 }
-  
+
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,14 +168,14 @@ plot.zoo(data,
          lwd = 1,
          col=c(2,1),
          cex.lab=1,
-          )
+)
 legend("top", c('PS Inflation', 'IPCA Inflation'), lty = 1, col=c(2,1), nc=2, cex = 1, bty = "n")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Error in factor(year(date))
 # Included by Pedro Valls
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-inflation_ps_full_df$
+
 # Define the plot
 inflation_ps_full_df = as_tibble(inflation_ps_full)
 inflation_ps_full_df$date = time(inflation_ps_full)
@@ -345,9 +345,9 @@ linearHypothesis(eqb_1, c("mls(y, 1, 1)=1", "mls(z, 1, 1)=0", "mls(x_agg, 0, 1)=
 #-------- DUPLA DIFEREN?A
 
 eqdd_1 <- lm(diff(y) ~ diff(mls(y, 1, 1)) + 
-              diff(mls(z, 1, 1)) + 
-              diff(mls(x_agg, 0, 1)), 
-            data = data_train)
+               diff(mls(z, 1, 1)) + 
+               diff(mls(x_agg, 0, 1)), 
+             data = data_train)
 
 summary(eqdd_1)
 # aux_eqdd_1_f <- diffinv(fitted(eqdd_1), xi=data_train$y[1])
@@ -367,9 +367,9 @@ mls(data_train$x, 0:l, 28)
 data_train2 <- data_train
 
 eqm_u <- lm(y ~ trend +
-                   mls(z, 1, 1) +
-                   mls(x, 0:l, 28),
-                 data = data_train)
+              mls(z, 1, 1) +
+              mls(x, 0:l, 28),
+            data = data_train)
 
 summary(eqm_u)
 aux_eqm_u_f <- fitted(eqm_u)
@@ -389,10 +389,10 @@ linearHypothesis(eqm_u, mRestriction, c(0,0))
 #-------- MIDAS-AR(1) ---
 
 eqm_ar1 <- lm(y ~ trend +
-                     mls(y, 1, 1) +
-                     mls(z, 1, 1) +
-                     mls(x, 0:l, 28),
-                   data = data_train, start = NULL)
+                mls(y, 1, 1) +
+                mls(z, 1, 1) +
+                mls(x, 0:l, 28),
+              data = data_train, start = NULL)
 
 summary(eqm_ar1)
 aux_eqm_ar1_f <- fitted(eqm_ar1)
@@ -490,146 +490,152 @@ assign(paste("accuracy_in", l, sep = "_"),
 #--- FORECASTING NAIVE MODELS ----
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ar1_f <- c()
-ar2_f <- c()
-arima_f <- c()
-arima_nl_f <- c()
-var_1_f <- c()
-eqb_1_f <- c()
-eqdd_1_f <- c()
-eqm_u_f <- c()
-eqm_ar1r_f <- c()
-eqm_np_f <- c()
-
-
-aux_var_1_rmse <- c()
-resids_pvalues_var_1 <- c()
-
-options(warn = -1)
-
-for (h in 0:(n_test - step)) {
-  for (i in 1:28) {
-    TT = n_max - n_test + h
-    
-    aux_4 <- inflation_ps_full[1:(TT * 28)] %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
-    aux_44 <- xts(aux_4, order.by = date_m[1:TT])
-    
-    
-    data_train <- list(
-      y = as.numeric(inflation_cpi_full[1:TT]),
-      x = as.numeric(aux_44),
-      z = as.numeric(market_m_annual_full[1:TT]),
-      trend = seq(1:TT)
-    )
-    
-    data_train_diff <- list(
-      y = as.numeric(diff(inflation_cpi_full[1:TT])),
-      x = as.numeric(diff(aux_44)),
-      z = as.numeric(diff(market_m_annual_full[1:TT])),
-      trend = seq(1:TT)
-    )
-    
-    
-    
-    aux_1 <- Arima(inflation_ps_full[1:(TT * 28 + i)], order = c(1, 1, 0))
-    
-    if (28 - i + 28 * (step - 1) != 0) {
-      aux_2 <- predict(aux_1, (28 - i + 28 * (step - 1)))$pred %>% xts(order.by = date_d[(TT * 28 + i + 1):((TT + 1) * 28 + 28 * (step - 1))])
-    } else {
-      aux_2 <- c()
+for(step in 3:1){
+  
+  cat("Current Step", step, "\n")
+  
+  ar1_f <- c()
+  ar2_f <- c()
+  arima_f <- c()
+  arima_nl_f <- c()
+  var_1_f <- c()
+  eqb_1_f <- c()
+  eqdd_1_f <- c()
+  eqm_u_f <- c()
+  eqm_ar1r_f <- c()
+  eqm_np_f <- c()
+  
+  
+  aux_var_1_rmse <- c()
+  resids_pvalues_var_1 <- c()
+  
+  options(warn = -1)
+  
+  for (h in 0:(n_test - step)) {
+    for (i in 1:28) {
+      
+      cat(sprintf(">h:%d\ti:%d\n", h,i))
+      
+      TT = n_max - n_test + h
+      
+      aux_4 <- inflation_ps_full[1:(TT * 28)] %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
+      aux_44 <- xts(aux_4, order.by = date_m[1:TT])
+      
+      
+      data_train <- list(
+        y = as.numeric(inflation_cpi_full[1:TT]),
+        x = as.numeric(aux_44),
+        z = as.numeric(market_m_annual_full[1:TT]),
+        trend = seq(1:TT)
+      )
+      
+      data_train_diff <- list(
+        y = as.numeric(diff(inflation_cpi_full[1:TT])),
+        x = as.numeric(diff(aux_44)),
+        z = as.numeric(diff(market_m_annual_full[1:TT])),
+        trend = seq(1:TT)
+      )
+      
+      aux_1 <- Arima(inflation_ps_full[1:(TT * 28 + i)], order = c(1, 1, 0))
+      
+      if (28 - i + 28 * (step - 1) != 0) {
+        aux_2 <- predict(aux_1, (28 - i + 28 * (step - 1)))$pred %>% xts(order.by = date_d[(TT * 28 + i + 1):((TT + 1) * 28 + 28 * (step - 1))])
+      } else {
+        aux_2 <- c()
+      }
+      
+      aux_3 <- rbind(inflation_ps_full[(TT * 28 + 1):(TT * 28 + i)], aux_2)
+      aux_3_diff <- diff(aux_3)
+      aux_4 <- aux_3 %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
+      aux_4_diff <- aux_3_diff %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
+      
+      
+      data_test <- list(
+        y = as.numeric(rep(NA, step)),
+        x = as.numeric(aux_4),
+        z = as.numeric(rep(NA, step)),
+        trend = seq(1:step)
+      )
+      
+      data_test_diff <- list(
+        y = as.numeric(rep(NA, step)),
+        x = as.numeric(aux_4_diff),
+        z = as.numeric(rep(NA, step)),
+        trend = seq(1:step)
+      )
+      
+      
+      #------------- ARIMA -------------
+      
+      ar1 <- Arima(data_train$y, c(1, 0, 0), include.constant = TRUE)
+      aux_ar1_f <- forecast(ar1, h = step)$mean[step]
+      ar1_f <- rbind(ar1_f, aux_ar1_f)
+      
+      #------------- ARIMA -------------
+      
+      arima <- Arima(data_train$y, c(1, 1, 0), include.constant = TRUE)
+      aux_arima_f <- forecast(arima, h = step)$mean[step]
+      arima_f <- rbind(arima_f, aux_arima_f)
+      
+      
+      #-------------- VAR(1) --------------
+      
+      aux <- cbind(
+        na.omit(data_train$y),
+        na.omit(data_train$x),
+        na.omit(data_train$z),
+        na.omit(data_train$trend)
+      )
+      colnames(aux) <- c("y", "x", "z", "trend")
+      
+      
+      var_1 <- VAR(aux, p = 1)
+      aux_var_f <- predict(var_1, n.ahead = step)$fcst$y[step, 1]
+      var_1_f <- rbind(var_1_f, aux_var_f)
+      
+      
+      aux_var_1_rmse <- rbind(aux_var_1_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], var_1_f))
+      assign(paste("aux_var_1_rmse", step, sep = "_"), aux_var_1_rmse)
+      
+      
+      
+      residuals = xts(residuals(var_1), order.by=date_d_train[2:TT])$y
+      aux <- cbind(adf.test(residuals)$p.value, jarque.bera.test(residuals)$p.value, durbinWatsonTest(c(coredata(residuals))))
+      resids_pvalues_var_1 <- rbind(resids_pvalues_var_1, aux)
+      assign(paste("resids_pvalues_var_1", step, sep = "_"), resids_pvalues_var_1)
+      
+      #-------- BRIDGE EQUATION --------
+      eqb_1 <- midas_r(y ~ trend + 
+                         mls(y, step, 1) +
+                         mls(z, step, 1) +
+                         mls(x, step-1, 1),
+                       data = data_train,
+                       start = NULL
+      )
+      
+      aux_eqb_1_f <- forecast(eqb_1, newdata = data_test)$mean[step]
+      eqb_1_f <- rbind(eqb_1_f, aux_eqb_1_f)
+      
+      
+      #--------- DOUBLE DIFFERENCE --------
+      eqdd_1 <- midas_r(y ~  
+                          mls(y, step, 1) +
+                          mls(z, step:(step+1), 1) +
+                          mls(x, step-1, 1),
+                        data = data_train_diff,
+                        start = NULL
+      )
+      
+      aux_eqdd_1_f <- forecast(eqdd_1, newdata=data_test_diff)$mean
+      aux_eqdd_1_f1 <- sum(aux_eqdd_1_f) + data_train$y[TT]
+      eqdd_1_f <- rbind(eqdd_1_f, aux_eqdd_1_f1)
+      
     }
-    
-    aux_3 <- rbind(inflation_ps_full[(TT * 28 + 1):(TT * 28 + i)], aux_2)
-    aux_3_diff <- diff(aux_3)
-    aux_4 <- aux_3 %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
-    aux_4_diff <- aux_3_diff %>% coredata %>% cbind %>% matrix(nrow = 28) %>% colMeans(na.rm = TRUE)
-    
-    
-    data_test <- list(
-      y = as.numeric(rep(NA, step)),
-      x = as.numeric(aux_4),
-      z = as.numeric(rep(NA, step)),
-      trend = seq(1:step)
-    )
-    
-    data_test_diff <- list(
-      y = as.numeric(rep(NA, step)),
-      x = as.numeric(aux_4_diff),
-      z = as.numeric(rep(NA, step)),
-      trend = seq(1:step)
-    )
-
-    
-    #------------- ARIMA -------------
-    
-    ar1 <- Arima(data_train$y, c(1, 0, 0), include.constant = TRUE)
-    aux_ar1_f <- forecast(ar1, h = step)$mean[step]
-    ar1_f <- rbind(ar1_f, aux_ar1_f)
-    
-    #------------- ARIMA -------------
-    
-    arima <- Arima(data_train$y, c(1, 1, 0), include.constant = TRUE)
-    aux_arima_f <- forecast(arima, h = step)$mean[step]
-    arima_f <- rbind(arima_f, aux_arima_f)
-    
-    
-    #-------------- VAR(1) --------------
-  
-    aux <- cbind(
-      na.omit(data_train$y),
-      na.omit(data_train$x),
-      na.omit(data_train$z),
-      na.omit(data_train$trend)
-    )
-    colnames(aux) <- c("y", "x", "z", "trend")
-
-    
-    
-    var_1 <- VAR(aux, p = 1)
-    aux_var_f <- predict(var_1, n.ahead = step)$fcst$y[step, 1]
-    var_1_f <- rbind(var_1_f, aux_var_f)
-    
-    aux_var_1_rmse <- rbind(aux_var_1_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], var_1_f))
-    assign(paste("aux_var_1_rmse", step, sep = "_"), aux_var_1_rmse)
-    
-    residuals = xts(residuals(var_1), order.by=date_d_train[2:TT])$y
-    aux <- cbind(adf.test(residuals)$p.value, jarque.bera.test(residuals)$p.value, durbinWatsonTest(c(coredata(residuals))))
-    resids_pvalues_var_1 <- rbind(resids_pvalues_var_1, aux)
-    assign(paste("resids_pvalues_var_1", step, sep = "_"), resids_pvalues_var_1)
-    
-    #-------- BRIDGE EQUATION --------
-    eqb_1 <- midas_r(y ~ trend + 
-                       mls(y, step, 1) +
-                       mls(z, step, 1) +
-                       mls(x, step-1, 1),
-                     data = data_train,
-                     start = NULL
-    )
-    
-    
-    aux_eqb_1_f <- forecast(eqb_1, newdata = data_test)$mean[step]
-    eqb_1_f <- rbind(eqb_1_f, aux_eqb_1_f)
-    
-    
-    #--------- DOUBLE DIFFERENCE --------
-    eqdd_1 <- midas_r(y ~  
-                   mls(y, step, 1) +
-                   mls(z, step:(step+1), 1) +
-                   mls(x, step-1, 1),
-                 data = data_train_diff,
-                 start = NULL
-    )
-    
-    aux_eqdd_1_f <- forecast(eqdd_1, newdata=data_test_diff)$mean
-    aux_eqdd_1_f1 <- sum(aux_eqdd_1_f) + data_train$y[TT]
-    eqdd_1_f <- rbind(eqdd_1_f, aux_eqdd_1_f1)
-  
   }
-}
-
+} # fim for step in 3:1
 aux_var_1_rmse_1 = xts(aux_var_1_rmse_1, order.by = date_d_test)
-aux_var_1_rmse_2 = xts(aux_var_1_rmse_2, order.by = date_d_test)
-aux_var_1_rmse_3 = xts(aux_var_1_rmse_3, order.by = date_d_test)
+aux_var_1_rmse_2 = xts(aux_var_1_rmse_2, order.by = date_d_test[-c(1:28)])
+aux_var_1_rmse_3 = xts(aux_var_1_rmse_3, order.by = date_d_test[-c(1:56)])
 
 
 options(warn = 1)
@@ -684,130 +690,139 @@ assign(paste("accuracy_naive_point", step, sep = "_"),
 )
 
 
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #------ FORECASTING MIDAS --------
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-eqm_u_f <- c()
-eqm_ar1_f <- c()
-eqm_ar1r_f <- c()
-eqm_np_f <- c()
-
-aux_eqm_u_rmse <- c()
-aux_eqm_ar1_rmse <- c()
-aux_eqm_ar1r_rmse <- c()
-aux_eqm_np_rmse <- c()
-
-resids_pvalues_ar1 <- c()
-resids_pvalues_ar1r <-c()
-
-options(warn = -1)
-
-for (h in 0:(n_test - step)) {
-  for (i in 1:28) {
-    TT = n_max - n_test + h
-    
-    data_train <- list(
-      y = as.numeric(inflation_cpi_full[1:TT]),
-      x = as.numeric(inflation_ps_full[1:(TT * 28)]),
-      z = as.numeric(market_m_annual_full[1:TT]),
-      trend = seq(1:TT)
-    )
-    
-    
-    aux_1 <- Arima(inflation_ps_full[1:(TT * 28 + i)], order = c(1, 1, 0), include.constant = TRUE)
-    
-    if (28 - i + 28 * (step-1) != 0) { 
-      aux_2 <- xts(forecast(aux_1, h = (28-i+28*(step-1)))$mean,
-                   order.by = date_d[(TT*28+i+1):((TT+1)*28+28*(step-1))])
-    } else {
-      aux_2 <- c()
-    }
-    
-    aux_3 <- rbind(inflation_ps_full[(TT*28+1):(TT*28+i)], aux_2)
-    
-    data_test <- list(
-      y = as.numeric(rep(NA, step)),
-      x = as.numeric(aux_3),
-      z = as.numeric(rep(NA, step)),
-      trend = seq(1:step)
-    )
-    
-    
-    
-    #-------- MIDAS-DL --------
-    
-    eqm_u <- midas_r(y ~ trend +
-                       mls(z, step, 1) +
-                       mls(x, 0:l, 28),
-                     data = data_train,
-                     start = NULL)
-    
-    aux_eqm_u_f <- forecast(eqm_u, newdata = data_test)$mean[step]
-    eqm_u_f <- rbind(eqm_u_f, aux_eqm_u_f)
-    
-    aux_eqm_u_rmse <- rbind(aux_eqm_u_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_u_f))
-    assign(paste("aux_eqm_u_rmse", step, sep = "_"), aux_eqm_ar1_rmse)
-    
-    
-    
-    #-------- MIDAS-AR(1) --------
-    #l=13
-    eqm_ar1 <- midas_r(y ~ trend +
-                         mls(y, step, 1) +
+for(step in 3:1){
+  
+  cat("Current Step", step, "\n")
+  
+  eqm_u_f <- c()
+  eqm_ar1_f <- c()
+  eqm_ar1r_f <- c()
+  eqm_np_f <- c()
+  
+  aux_eqm_u_rmse <- c()
+  aux_eqm_ar1_rmse <- c()
+  aux_eqm_ar1r_rmse <- c()
+  aux_eqm_np_rmse <- c()
+  
+  resids_pvalues_ar1 <- c()
+  resids_pvalues_ar1r <-c()
+  
+  options(warn = -1)
+  
+  for (h in 0:(n_test - step)) {
+    for (i in 1:28) {
+      
+      cat(sprintf(">h:%d\ti:%d\n", h,i))
+      
+      TT = n_max - n_test + h
+      
+      data_train <- list(
+        y = as.numeric(inflation_cpi_full[1:TT]),
+        x = as.numeric(inflation_ps_full[1:(TT * 28)]),
+        z = as.numeric(market_m_annual_full[1:TT]),
+        trend = seq(1:TT)
+      )
+      
+      
+      aux_1 <- Arima(inflation_ps_full[1:(TT * 28 + i)], order = c(1, 1, 0), include.constant = TRUE)
+      
+      if (28 - i + 28 * (step-1) != 0) { 
+        aux_2 <- xts(forecast(aux_1, h = (28-i+28*(step-1)))$mean,
+                     order.by = date_d[(TT*28+i+1):((TT+1)*28+28*(step-1))])
+      } else {
+        aux_2 <- c()
+      }
+      
+      aux_3 <- rbind(inflation_ps_full[(TT*28+1):(TT*28+i)], aux_2)
+      
+      data_test <- list(
+        y = as.numeric(rep(NA, step)),
+        x = as.numeric(aux_3),
+        z = as.numeric(rep(NA, step)),
+        trend = seq(1:step)
+      )
+      
+      
+      
+      #-------- MIDAS-DL --------
+      
+      eqm_u <- midas_r(y ~ trend +
                          mls(z, step, 1) +
                          mls(x, 0:l, 28),
                        data = data_train,
                        start = NULL)
-    
-    aux_eqm_ar1_f <- forecast(eqm_ar1, newdata = data_test)$mean[step]
-    eqm_ar1_f <- rbind(eqm_ar1_f, aux_eqm_ar1_f)
-    
-    aux_eqm_ar1_rmse <- rbind(aux_eqm_ar1_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_ar1_f))
-    assign(paste("aux_eqm_ar1_rmse", step, sep = "_"), aux_eqm_ar1_rmse)
-    
-    aux <- cbind(adf.test(eqm_ar1$residuals)$p.value, jarque.bera.test(eqm_ar1$residuals)$p.value, durbinWatsonTest(eqm_ar1$residuals))
-    resids_pvalues_ar1 <- rbind(resids_pvalues_ar1, aux)
-    assign(paste("resids_pvalues_ar1", step, sep = "_"), resids_pvalues_ar1)
-    
-    #-------- MIDAS-AR(1)-R --------
-    #l=6
-    eqm_ar1r <- midas_r(
-      y ~ trend +
-        mls(y, step, 1) +
-        mls(z, step, 1) +
-        mls(x, 0:l, 28, nealmon),
-      data = data_train,
-      start = list(x = c(0, 0))
-    )
-    
-    aux_eqm_ar1r_f <- forecast(eqm_ar1r, newdata = data_test)$mean[step]
-    eqm_ar1r_f <- rbind(eqm_ar1r_f, aux_eqm_ar1r_f)
-    
-    aux_eqm_ar1r_rmse <- rbind(aux_eqm_ar1r_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_ar1r_f))
-    assign(paste("aux_eqm_ar1r_rmse", step, sep = "_"), aux_eqm_ar1r_rmse)
-    
-    aux <- cbind(adf.test(eqm_ar1r$residuals)$p.value, jarque.bera.test(eqm_ar1r$residuals)$p.value, durbinWatsonTest(eqm_ar1r$residuals))
-    resids_pvalues_ar1r <- rbind(resids_pvalues_ar1r, aux)
-    assign(paste("resids_pvalues_ar1r", step, sep = "_"), resids_pvalues_ar1r)
-    
-    
-    #-------- MIDAS-DL non-parametric--------
-    
-    eqm_np <- midas_r_np(y ~ trend +
+      
+      aux_eqm_u_f <- forecast(eqm_u, newdata = data_test)$mean[step]
+      eqm_u_f <- rbind(eqm_u_f, aux_eqm_u_f)
+      
+      aux_eqm_u_rmse <- rbind(aux_eqm_u_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_u_f))
+      assign(paste("aux_eqm_u_rmse", step, sep = "_"), aux_eqm_ar1_rmse)
+      
+      
+      
+      #-------- MIDAS-AR(1) --------
+      #l=13
+      eqm_ar1 <- midas_r(y ~ trend +
+                           mls(y, step, 1) +
+                           mls(z, step, 1) +
                            mls(x, 0:l, 28),
                          data = data_train,
-                         lambda = NULL)
-    
-    aux_eqm_np_f <- forecast(eqm_np, newdata = data_test)$mean[step]
-    eqm_np_f <- rbind(eqm_np_f, aux_eqm_np_f)
-    
-    aux_eqm_np_rmse <- rbind(aux_eqm_np_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], aux_eqm_np_f))
-    assign(paste("aux_eqm_np_rmse", step, sep = "_"), aux_eqm_ar1r_rmse)
-    
-    
+                         start = NULL)
+      
+      aux_eqm_ar1_f <- forecast(eqm_ar1, newdata = data_test)$mean[step]
+      eqm_ar1_f <- rbind(eqm_ar1_f, aux_eqm_ar1_f)
+      
+      aux_eqm_ar1_rmse <- rbind(aux_eqm_ar1_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_ar1_f))
+      assign(paste("aux_eqm_ar1_rmse", step, sep = "_"), aux_eqm_ar1_rmse)
+      
+      aux <- cbind(adf.test(eqm_ar1$residuals)$p.value, jarque.bera.test(eqm_ar1$residuals)$p.value, durbinWatsonTest(eqm_ar1$residuals))
+      resids_pvalues_ar1 <- rbind(resids_pvalues_ar1, aux)
+      assign(paste("resids_pvalues_ar1", step, sep = "_"), resids_pvalues_ar1)
+      
+      #-------- MIDAS-AR(1)-R --------
+      #l=6
+      eqm_ar1r <- midas_r(
+        y ~ trend +
+          mls(y, step, 1) +
+          mls(z, step, 1) +
+          mls(x, 0:l, 28, nealmon),
+        data = data_train,
+        start = list(x = c(0, 0))
+      )
+      
+      aux_eqm_ar1r_f <- forecast(eqm_ar1r, newdata = data_test)$mean[step]
+      eqm_ar1r_f <- rbind(eqm_ar1r_f, aux_eqm_ar1r_f)
+      
+      aux_eqm_ar1r_rmse <- rbind(aux_eqm_ar1r_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], eqm_ar1r_f))
+      assign(paste("aux_eqm_ar1r_rmse", step, sep = "_"), aux_eqm_ar1r_rmse)
+      
+      aux <- cbind(adf.test(eqm_ar1r$residuals)$p.value, jarque.bera.test(eqm_ar1r$residuals)$p.value, durbinWatsonTest(eqm_ar1r$residuals))
+      resids_pvalues_ar1r <- rbind(resids_pvalues_ar1r, aux)
+      assign(paste("resids_pvalues_ar1r", step, sep = "_"), resids_pvalues_ar1r)
+      
+      
+      #-------- MIDAS-DL non-parametric--------
+      
+      eqm_np <- midas_r_np(y ~ trend +
+                             mls(x, 0:l, 28),
+                           data = data_train,
+                           lambda = NULL)
+      
+      aux_eqm_np_f <- forecast(eqm_np, newdata = data_test)$mean[step]
+      eqm_np_f <- rbind(eqm_np_f, aux_eqm_np_f)
+      
+      aux_eqm_np_rmse <- rbind(aux_eqm_np_rmse, rmse(inflation_cpi_full_d[(((n_max-n_test)+step-1)*28+1):((TT+step-1)*28+i)], aux_eqm_np_f))
+      assign(paste("aux_eqm_np_rmse", step, sep = "_"), aux_eqm_ar1r_rmse)
+      
+      
+    }
   }
-}
-
+  
+} # fim de step in 3:1
 
 aux_eqm_ar1_rmse_1 = xts(aux_eqm_ar1_rmse_1, order.by = date_d_test)
 aux_eqm_ar1r_rmse_1 = xts(aux_eqm_ar1r_rmse_1, order.by = date_d_test)
@@ -817,8 +832,8 @@ aux_eqm_ar1r_rmse_1 = xts(aux_eqm_ar1r_rmse_1, order.by = date_d_test)
 # included by Pedro Valls
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-aux_eqm_ar1_rmse_2 = xts(aux_eqm_ar1_rmse_2, order.by = date_d_test)
-aux_eqm_ar1r_rmse_2 = xts(aux_eqm_ar1r_rmse_2, order.by = date_d_test)
+aux_eqm_ar1_rmse_2 = xts(aux_eqm_ar1_rmse_2, order.by = date_d_test[-c(1:28)])
+aux_eqm_ar1r_rmse_2 = xts(aux_eqm_ar1r_rmse_2, order.by = date_d_test[-c(1:28)])
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # aux_eqm_ar1_rmse_3 not found
@@ -826,8 +841,8 @@ aux_eqm_ar1r_rmse_2 = xts(aux_eqm_ar1r_rmse_2, order.by = date_d_test)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-aux_eqm_ar1_rmse_3 = xts(aux_eqm_ar1_rmse_3, order.by = date_d_test)
-aux_eqm_ar1r_rmse_3 = xts(aux_eqm_ar1r_rmse_3, order.by = date_d_test)
+aux_eqm_ar1_rmse_3 = xts(aux_eqm_ar1_rmse_3, order.by = date_d_test[-c(1:56)])
+aux_eqm_ar1r_rmse_3 = xts(aux_eqm_ar1r_rmse_3, order.by = date_d_test[-c(1:56)])
 
 
 
@@ -929,11 +944,11 @@ title('h=3')
 
 # MODEL CONFIDENCE SET
 aux <- cbind(loss_ar1, loss_arima, loss_var_1, loss_eqb_1, loss_eqm_u_6, loss_eqm_ar1_6, loss_eqm_ar1r_6, loss_eqm_np_6)
-            # loss_eqm_u_13, loss_eqm_ar1_13, loss_eqm_ar1r_13, loss_eqm_np_13,  loss_eqm_u_27, loss_eqm_ar1_27, 
-            # loss_eqm_ar1r_27, loss_eqm_np_27)
+# loss_eqm_u_13, loss_eqm_ar1_13, loss_eqm_ar1r_13, loss_eqm_np_13,  loss_eqm_u_27, loss_eqm_ar1_27, 
+# loss_eqm_ar1r_27, loss_eqm_np_27)
 colnames(aux) <- cbind('loss_ar1', 'loss_arima', 'loss_var_1', 'loss_eqb_1', 'loss_eqm_u_6', 'loss_eqm_ar1_6', 'loss_eqm_ar1r_6', 'loss_eqm_np_6')
-                     #  'loss_eqm_u_13', 'loss_eqm_ar1_13', 'loss_eqm_ar1r_13', 'loss_eqm_np_13',  'loss_eqm_u_27', 'loss_eqm_ar1_27', 
-                      # 'loss_eqm_ar1r_27', 'loss_eqm_np_27')
+#  'loss_eqm_u_13', 'loss_eqm_ar1_13', 'loss_eqm_ar1r_13', 'loss_eqm_np_13',  'loss_eqm_u_27', 'loss_eqm_ar1_27', 
+# 'loss_eqm_ar1r_27', 'loss_eqm_np_27')
 MCSprocedure(aux)
 
 # DIEBOLD E MARIANO
@@ -987,7 +1002,7 @@ eq_em_u <- lm(inflation_cpi_test ~
                 eqm_ar1_f_avg +
                 eqm_ar1r_f_avg +
                 eqm_np_f_avg
-                )
+)
 
 linearHypothesis(eq_em_u, c("ar1_f_avg=1", "arima_f_avg=0", "var_1_f_avg=0", "eqb_1_f_avg=0",
                             "eqm_u_f_avg=0", "eqm_ar1_f_avg=0", "eqm_ar1r_f_avg=0", "eqm_np_f_avg=0"))
@@ -1015,13 +1030,13 @@ linearHypothesis(eq_em_u, c("ar1_f_avg=0", "arima_f_avg=0", "var_1_f_avg=0", "eq
 
 # residual diagnostic
 eq_em_ar1 <- lm(error_ar1 ~
-                    arima_f_avg +
-                    var_1_f_avg +
-                    eqb_1_f_avg +
-                    eqm_u_f_avg +
-                    eqm_ar1_f_avg +
-                    eqm_ar1r_f_avg +
-                    eqm_np_f_avg)
+                  arima_f_avg +
+                  var_1_f_avg +
+                  eqb_1_f_avg +
+                  eqm_u_f_avg +
+                  eqm_ar1_f_avg +
+                  eqm_ar1r_f_avg +
+                  eqm_np_f_avg)
 
 summary(eq_em_ar1)
 
@@ -1037,13 +1052,13 @@ eq_em_arima <- lm(error_arima ~
 summary(eq_em_arima)
 
 eq_em_var <- lm(error_var_1 ~
-                    ar1_f_avg +
-                    arima_f_avg +
-                    eqb_1_f_avg +
-                    eqm_u_f_avg +
-                    eqm_ar1_f_avg +
-                    eqm_ar1r_f_avg +
-                    eqm_np_f_avg)
+                  ar1_f_avg +
+                  arima_f_avg +
+                  eqb_1_f_avg +
+                  eqm_u_f_avg +
+                  eqm_ar1_f_avg +
+                  eqm_ar1r_f_avg +
+                  eqm_np_f_avg)
 summary(eq_em_var)
 
 eq_em_eqb <- lm(error_eqb_1 ~
@@ -1058,43 +1073,43 @@ summary(eq_em_eqb)
 
 
 eq_em_eqm_u <- lm(error_eqm_u ~
-                  ar1_f_avg +
-                  arima_f_avg + 
-                  var_1_f_avg +
-                  eqb_1_f_avg +
-                  eqm_ar1_f_avg +
-                  eqm_ar1r_f_avg +
-                  eqm_np_f_avg)
+                    ar1_f_avg +
+                    arima_f_avg + 
+                    var_1_f_avg +
+                    eqb_1_f_avg +
+                    eqm_ar1_f_avg +
+                    eqm_ar1r_f_avg +
+                    eqm_np_f_avg)
 summary(eq_em_eqm_u)
 
 eq_em_eqm_ar1 <- lm(error_eqm_ar1 ~
-                  ar1_f_avg +
-                  arima_f_avg + 
-                  var_1_f_avg +
-                  eqb_1_f_avg +
-                  eqm_u_f_avg +
-                  eqm_ar1r_f_avg +
-                  eqm_np_f_avg)
+                      ar1_f_avg +
+                      arima_f_avg + 
+                      var_1_f_avg +
+                      eqb_1_f_avg +
+                      eqm_u_f_avg +
+                      eqm_ar1r_f_avg +
+                      eqm_np_f_avg)
 summary(eq_em_eqm_ar1)
 
 eq_em_eqm_ar1r <- lm(error_eqm_ar1r ~
-                ar1_f_avg +
-                arima_f_avg + 
-                var_1_f_avg +
-                eqb_1_f_avg +
-                eqm_u_f_avg +
-                eqm_ar1_f_avg +
-                eqm_np_f_avg)
+                       ar1_f_avg +
+                       arima_f_avg + 
+                       var_1_f_avg +
+                       eqb_1_f_avg +
+                       eqm_u_f_avg +
+                       eqm_ar1_f_avg +
+                       eqm_np_f_avg)
 summary(eq_em_eqm_ar1r)
 
 eq_em_eqm_np <- lm(error_eqm_np ~
-                ar1_f_avg +
-                arima_f_avg + 
-                var_1_f_avg +
-                eqb_1_f_avg +
-                eqm_u_f_avg +
-                eqm_ar1_f_avg +
-                eqm_ar1r_f_avg)
+                     ar1_f_avg +
+                     arima_f_avg + 
+                     var_1_f_avg +
+                     eqb_1_f_avg +
+                     eqm_u_f_avg +
+                     eqm_ar1_f_avg +
+                     eqm_ar1r_f_avg)
 summary(eq_em_eqm_np)
 
 
@@ -1103,13 +1118,13 @@ data = cbind(ar1_f_avg, arima_f_avg, var_1_f_avg, eqb_1_f_avg, eqm_u_f_avg, eqm_
 
 data_minus = data.frame(data - ar1_f_avg)
 eq_em_ar1 <- lm(error_ar1 ~
-                    data_minus$arima_f_avg +
-                    data_minus$var_1_f_avg +
-                    data_minus$eqb_1_f_avg +
-                    data_minus$eqm_u_f_avg +
-                    data_minus$eqm_ar1_f_avg +
-                    data_minus$eqm_ar1r_f_avg +
-                    data_minus$eqm_np_f_avg)
+                  data_minus$arima_f_avg +
+                  data_minus$var_1_f_avg +
+                  data_minus$eqb_1_f_avg +
+                  data_minus$eqm_u_f_avg +
+                  data_minus$eqm_ar1_f_avg +
+                  data_minus$eqm_ar1r_f_avg +
+                  data_minus$eqm_np_f_avg)
 
 summary(eq_em_ar1)
 
@@ -1160,23 +1175,23 @@ summary(eq_em_eqm_u)
 
 data_minus = data.frame(data - eqm_ar1_f_avg)
 eq_em_eqm_ar1 <- lm(error_eqm_ar1 ~
-                  data_minus$arima_f_avg + 
-                  data_minus$var_1_f_avg +
-                  data_minus$eqb_1_f_avg +
-                  data_minus$eqm_u_f_avg +
-                  data_minus$eqm_ar1r_f_avg +
-                  data_minus$eqm_np_f_avg)
+                      data_minus$arima_f_avg + 
+                      data_minus$var_1_f_avg +
+                      data_minus$eqb_1_f_avg +
+                      data_minus$eqm_u_f_avg +
+                      data_minus$eqm_ar1r_f_avg +
+                      data_minus$eqm_np_f_avg)
 summary(eq_em_eqm_ar1)
 
 data_minus = data.frame(data - eqm_ar1r_f_avg)
 eq_em_eqm_ar1r <- lm(error_eqm_ar1r ~
-                         data_minus$ar1_f_avg +
-                         data_minus$arima_f_avg + 
-                         data_minus$var_1_f_avg +
-                         data_minus$eqb_1_f_avg +
-                         data_minus$eqm_u_f_avg +
-                         data_minus$eqm_ar1_f_avg +
-                         data_minus$eqm_np_f_avg)
+                       data_minus$ar1_f_avg +
+                       data_minus$arima_f_avg + 
+                       data_minus$var_1_f_avg +
+                       data_minus$eqb_1_f_avg +
+                       data_minus$eqm_u_f_avg +
+                       data_minus$eqm_ar1_f_avg +
+                       data_minus$eqm_np_f_avg)
 summary(eq_em_eqm_ar1r)
 
 data_minus = data.frame(data - eqm_np_f_avg)
