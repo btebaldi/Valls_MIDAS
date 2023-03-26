@@ -10,7 +10,7 @@ step <- 1
 #
 # Tebaldi: Fazendo uma lista que vai conter os valores de "l" a serem utilizados
 # no processo de looping
-loop_list <- c(6, 13, 27)
+loop_list <- c(6, 10, 13, 27)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #------- LOADING PACKAGES --------
@@ -650,6 +650,10 @@ for(l in loop_list){
                "X14", "X15", "X16", "X17", "X18", "X19", "X20",
                "X21", "X22", "X23", "X24", "X25", "X26", "X27")
     colnames(aux_tbl) <- c("y", mcols)
+  } else if(l == 10)  {
+    mcols <- c("Intercept", "trend", "y_1", "z_1", "X0", "X1", "X2", "X3", "X4", "X5", "X6",
+               "X7", "X8", "X9", "X10")
+    colnames(aux_tbl) <- c("y", mcols)
   } else {
     stop("NAO PREVISTO")
   }
@@ -771,7 +775,7 @@ for(l in loop_list){
 # need a loop for l = 6, 13 and 27
 #---------------------------------
 
-for(step in 3:1){
+for(step in 6:1){
   
   cat("Current Step ahead:", step, "\n")
   
@@ -953,12 +957,15 @@ for(step in 3:1){
   }
   
   
-} # fim for step in 3:1
+} # fim for step in 6:1
 
 aux_var_1_rmse_1 = xts(aux_var_1_rmse_1, order.by = date_d_test)
 aux_var_1_rmse_2 = xts(aux_var_1_rmse_2, order.by = date_d_test[-c(1:28)])
 aux_var_1_rmse_3 = xts(aux_var_1_rmse_3, order.by = date_d_test[-c(1:56)])
 
+aux_var_1_rmse_4 = xts(aux_var_1_rmse_4, order.by = date_d_test[-c(1:84)])
+aux_var_1_rmse_5 = xts(aux_var_1_rmse_5, order.by = date_d_test[-c(1:112)])
+aux_var_1_rmse_6 = xts(aux_var_1_rmse_6, order.by = date_d_test[-c(1:140)])
 
 options(warn = 1)
 
@@ -993,6 +1000,30 @@ var_1_f_avg_s3 <- colMeans(matrix(var_1_f_s3, 28), na.rm = TRUE)
 eqb_1_f_avg_s3 <- colMeans(matrix(eqb_1_f_s3, 28), na.rm = TRUE)
 eqdd_1_f_avg_s3 <- colMeans(matrix(eqdd_1_f_s3, 28), na.rm = TRUE)
 
+
+ar1_f_avg_s4 <- colMeans(matrix(ar1_f_s4, 28), na.rm = TRUE)
+ar2_f_avg_s4 <- colMeans(matrix(ar2_f_s4, 28), na.rm = TRUE)
+arima_f_avg_s4 <- colMeans(matrix(arima_f_s4, 28), na.rm = TRUE)
+arima_nl_f_avg_s4 <- colMeans(matrix(arima_nl_f_s4, 28), na.rm = TRUE)
+var_1_f_avg_s4 <- colMeans(matrix(var_1_f_s4, 28), na.rm = TRUE)
+eqb_1_f_avg_s4 <- colMeans(matrix(eqb_1_f_s4, 28), na.rm = TRUE)
+eqdd_1_f_avg_s4 <- colMeans(matrix(eqdd_1_f_s4, 28), na.rm = TRUE)
+
+ar1_f_avg_s5 <- colMeans(matrix(ar1_f_s5, 28), na.rm = TRUE)
+ar2_f_avg_s5 <- colMeans(matrix(ar2_f_s5, 28), na.rm = TRUE)
+arima_f_avg_s5 <- colMeans(matrix(arima_f_s5, 28), na.rm = TRUE)
+arima_nl_f_avg_s5 <- colMeans(matrix(arima_nl_f_s5, 28), na.rm = TRUE)
+var_1_f_avg_s5 <- colMeans(matrix(var_1_f_s5, 28), na.rm = TRUE)
+eqb_1_f_avg_s5 <- colMeans(matrix(eqb_1_f_s5, 28), na.rm = TRUE)
+eqdd_1_f_avg_s5 <- colMeans(matrix(eqdd_1_f_s5, 28), na.rm = TRUE)
+
+ar1_f_avg_s6 <- colMeans(matrix(ar1_f_s6, 28), na.rm = TRUE)
+ar2_f_avg_s6 <- colMeans(matrix(ar2_f_s6, 28), na.rm = TRUE)
+arima_f_avg_s6 <- colMeans(matrix(arima_f_s6, 28), na.rm = TRUE)
+arima_nl_f_avg_s6 <- colMeans(matrix(arima_nl_f_s6, 28), na.rm = TRUE)
+var_1_f_avg_s6 <- colMeans(matrix(var_1_f_s6, 28), na.rm = TRUE)
+eqb_1_f_avg_s6 <- colMeans(matrix(eqb_1_f_s6, 28), na.rm = TRUE)
+eqdd_1_f_avg_s6 <- colMeans(matrix(eqdd_1_f_s6, 28), na.rm = TRUE)
 
 # accuracy & Loss
 #--------------
@@ -1060,6 +1091,58 @@ loss_eqb_1_s3 <- LossLevel(inflation_cpi_test[-c(1:2)], eqb_1_f_avg_s3)
 loss_eqdd_1_s3 <- LossLevel(inflation_cpi_test[-c(1:2)], eqdd_1_f_avg_s3)
 
 
+# Step: 4
+accuracy_ar1_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], ar1_f_avg_s4))
+accuracy_ar2_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], ar2_f_avg_s4))
+accuracy_arima_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], arima_f_avg_s4))
+accuracy_arima_nl_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], arima_nl_f_avg_s4))
+accuracy_var_1_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], var_1_f_avg_s4))
+accuracy_eqb_1_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], eqb_1_f_avg_s4))
+accuracy_eqdd_1_s4 <- c(rmse(inflation_cpi_test[-c(1:3)], eqdd_1_f_avg_s4))
+
+
+loss_ar1_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], ar1_f_avg_s4)
+loss_ar2_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], ar2_f_avg_s4)
+loss_arima_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], arima_f_avg_s4)
+loss_arima_nl_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], arima_nl_f_avg_s4)
+loss_var_1_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], var_1_f_avg_s4)
+loss_eqb_1_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], eqb_1_f_avg_s4)
+loss_eqdd_1_s4 <- LossLevel(inflation_cpi_test[-c(1:3)], eqdd_1_f_avg_s4)
+
+
+# Step: 5
+accuracy_ar1_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], ar1_f_avg_s5))
+accuracy_ar2_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], ar2_f_avg_s5))
+accuracy_arima_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], arima_f_avg_s5))
+accuracy_arima_nl_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], arima_nl_f_avg_s5))
+accuracy_var_1_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], var_1_f_avg_s5))
+accuracy_eqb_1_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], eqb_1_f_avg_s5))
+accuracy_eqdd_1_s5 <- c(rmse(inflation_cpi_test[-c(1:4)], eqdd_1_f_avg_s5))
+
+loss_ar1_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], ar1_f_avg_s5)
+loss_ar2_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], ar2_f_avg_s5)
+loss_arima_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], arima_f_avg_s5)
+loss_arima_nl_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], arima_nl_f_avg_s5)
+loss_var_1_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], var_1_f_avg_s5)
+loss_eqb_1_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], eqb_1_f_avg_s5)
+loss_eqdd_1_s5 <- LossLevel(inflation_cpi_test[-c(1:4)], eqdd_1_f_avg_s5)
+
+# Step: 6
+accuracy_ar1_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], ar1_f_avg_s6))
+accuracy_ar2_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], ar2_f_avg_s6))
+accuracy_arima_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], arima_f_avg_s6))
+accuracy_arima_nl_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], arima_nl_f_avg_s6))
+accuracy_var_1_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], var_1_f_avg_s6))
+accuracy_eqb_1_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], eqb_1_f_avg_s6))
+accuracy_eqdd_1_s6 <- c(rmse(inflation_cpi_test[-c(1:5)], eqdd_1_f_avg_s6))
+
+loss_ar1_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], ar1_f_avg_s6)
+loss_ar2_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], ar2_f_avg_s6)
+loss_arima_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], arima_f_avg_s6)
+loss_arima_nl_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], arima_nl_f_avg_s6)
+loss_var_1_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], var_1_f_avg_s6)
+loss_eqb_1_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], eqb_1_f_avg_s6)
+loss_eqdd_1_s6 <- LossLevel(inflation_cpi_test[-c(1:5)], eqdd_1_f_avg_s6)
 
 #---------------------------------------------------------------
 # accuracy_naive_step_1l6
@@ -1068,7 +1151,7 @@ loss_eqdd_1_s3 <- LossLevel(inflation_cpi_test[-c(1:2)], eqdd_1_f_avg_s3)
 # I try to include lines 804 up to 856 inside the loop for step
 # but it did not work
 #--------------------------------------------------------------
-for(step in 1:3){
+for(step in 1:6){
   
   # tebaldi: Cria um vetor com o RMSFE de cada modelo
   accuracy_in <- rbind(get(sprintf("accuracy_ar1_s%d", step)),
@@ -1100,7 +1183,7 @@ for(step in 1:3){
 
 # MOST RECENT FORECAST
 # tebaldi: looping por step
-for(step in 3:1){
+for(step in 6:1){
   ar1_f_last <- matrix(get(sprintf("ar1_f_s%d", step)), 28)[28, ]
   arima_f_last <- matrix(get(sprintf("arima_f_s%d", step)), 28)[28, ]
   var_1_f_last <- matrix(get(sprintf("var_1_f_s%d", step)), 28)[28, ]
@@ -1140,7 +1223,7 @@ for(step in 3:1){
 for(l in loop_list){
   cat("Current l", l, "\n")
   
-  for(step in 3:1){
+  for(step in 6:1){
     
     cat("Current Step", step, "\n")
     
@@ -1332,10 +1415,12 @@ for(l in loop_list){
 # aux_eqm_ar1r_rmse_1 = xts(aux_eqm_ar1r_rmse_1, order.by = date_d_test)
 
 aux_eqm_ar1_rmse_h1_l6 = xts(aux_eqm_ar1_rmse_h1_l6, order.by = date_d_test)
+aux_eqm_ar1_rmse_h1_l10 = xts(aux_eqm_ar1_rmse_h1_l10, order.by = date_d_test)
 aux_eqm_ar1_rmse_h1_l13 = xts(aux_eqm_ar1_rmse_h1_l13, order.by = date_d_test)
 aux_eqm_ar1_rmse_h1_l27 = xts(aux_eqm_ar1_rmse_h1_l27, order.by = date_d_test)
 
 aux_eqm_ar1r_rmse_h1_l6 = xts(aux_eqm_ar1r_rmse_h1_l6, order.by = date_d_test)
+aux_eqm_ar1r_rmse_h1_l10 = xts(aux_eqm_ar1r_rmse_h1_l10, order.by = date_d_test)
 aux_eqm_ar1r_rmse_h1_l13 = xts(aux_eqm_ar1r_rmse_h1_l13, order.by = date_d_test)
 aux_eqm_ar1r_rmse_h1_l27 = xts(aux_eqm_ar1r_rmse_h1_l27, order.by = date_d_test)
 
@@ -1350,10 +1435,12 @@ aux_eqm_ar1r_rmse_h1_l27 = xts(aux_eqm_ar1r_rmse_h1_l27, order.by = date_d_test)
 # aux_eqm_ar1r_rmse_2 = xts(aux_eqm_ar1r_rmse_2, order.by = date_d_test[-c(1:28)])
 
 aux_eqm_ar1_rmse_h2_l6 =   xts(aux_eqm_ar1_rmse_h2_l6, order.by = date_d_test[-c(1:28)])
+aux_eqm_ar1_rmse_h2_l10 =  xts(aux_eqm_ar1_rmse_h2_l10, order.by = date_d_test[-c(1:28)])
 aux_eqm_ar1_rmse_h2_l13 =  xts(aux_eqm_ar1_rmse_h2_l13, order.by = date_d_test[-c(1:28)])
 aux_eqm_ar1_rmse_h2_l27 =  xts(aux_eqm_ar1_rmse_h2_l27, order.by = date_d_test[-c(1:28)])
 
 aux_eqm_ar1r_rmse_h2_l6 =  xts(aux_eqm_ar1r_rmse_h2_l6, order.by = date_d_test[-c(1:28)])
+aux_eqm_ar1r_rmse_h2_l10 = xts(aux_eqm_ar1r_rmse_h2_l10, order.by = date_d_test[-c(1:28)])
 aux_eqm_ar1r_rmse_h2_l13 = xts(aux_eqm_ar1r_rmse_h2_l13, order.by = date_d_test[-c(1:28)])
 aux_eqm_ar1r_rmse_h2_l27 = xts(aux_eqm_ar1r_rmse_h2_l27, order.by = date_d_test[-c(1:28)])
 
@@ -1369,12 +1456,52 @@ aux_eqm_ar1r_rmse_h2_l27 = xts(aux_eqm_ar1r_rmse_h2_l27, order.by = date_d_test[
 # aux_eqm_ar1r_rmse_3 = xts(aux_eqm_ar1r_rmse_3, order.by = date_d_test[-c(1:56)])
 
 aux_eqm_ar1_rmse_h3_l6 =   xts(aux_eqm_ar1_rmse_h3_l6, order.by = date_d_test[-c(1:56)])
+aux_eqm_ar1_rmse_h3_l10 =  xts(aux_eqm_ar1_rmse_h3_l10, order.by = date_d_test[-c(1:56)])
 aux_eqm_ar1_rmse_h3_l13 =  xts(aux_eqm_ar1_rmse_h3_l13, order.by = date_d_test[-c(1:56)])
 aux_eqm_ar1_rmse_h3_l27 =  xts(aux_eqm_ar1_rmse_h3_l27, order.by = date_d_test[-c(1:56)])
 
 aux_eqm_ar1r_rmse_h3_l6 =  xts(aux_eqm_ar1r_rmse_h3_l6, order.by = date_d_test[-c(1:56)])
+aux_eqm_ar1r_rmse_h3_l10 = xts(aux_eqm_ar1r_rmse_h3_l10, order.by = date_d_test[-c(1:56)])
 aux_eqm_ar1r_rmse_h3_l13 = xts(aux_eqm_ar1r_rmse_h3_l13, order.by = date_d_test[-c(1:56)])
 aux_eqm_ar1r_rmse_h3_l27 = xts(aux_eqm_ar1r_rmse_h3_l27, order.by = date_d_test[-c(1:56)])
+
+# Tebaldi
+# 2022-10-16: Incluido os lags 6, 5, 4
+
+# h=4
+aux_eqm_ar1_rmse_h4_l6 =   xts(aux_eqm_ar1_rmse_h4_l6, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1_rmse_h4_l10 =  xts(aux_eqm_ar1_rmse_h4_l10, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1_rmse_h4_l13 =  xts(aux_eqm_ar1_rmse_h4_l13, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1_rmse_h4_l27 =  xts(aux_eqm_ar1_rmse_h4_l27, order.by = date_d_test[-c(1:84)])
+
+aux_eqm_ar1r_rmse_h4_l6 =  xts(aux_eqm_ar1r_rmse_h4_l6, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1r_rmse_h4_l10 = xts(aux_eqm_ar1r_rmse_h4_l10, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1r_rmse_h4_l13 = xts(aux_eqm_ar1r_rmse_h4_l13, order.by = date_d_test[-c(1:84)])
+aux_eqm_ar1r_rmse_h4_l27 = xts(aux_eqm_ar1r_rmse_h4_l27, order.by = date_d_test[-c(1:84)])
+
+# h=5
+aux_eqm_ar1_rmse_h5_l6 =   xts(aux_eqm_ar1_rmse_h5_l6, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1_rmse_h5_l10 =  xts(aux_eqm_ar1_rmse_h5_l10, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1_rmse_h5_l13 =  xts(aux_eqm_ar1_rmse_h5_l13, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1_rmse_h5_l27 =  xts(aux_eqm_ar1_rmse_h5_l27, order.by = date_d_test[-c(1:112)])
+
+aux_eqm_ar1r_rmse_h5_l6 =  xts(aux_eqm_ar1r_rmse_h5_l6, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1r_rmse_h5_l10 = xts(aux_eqm_ar1r_rmse_h5_l10, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1r_rmse_h5_l13 = xts(aux_eqm_ar1r_rmse_h5_l13, order.by = date_d_test[-c(1:112)])
+aux_eqm_ar1r_rmse_h5_l27 = xts(aux_eqm_ar1r_rmse_h5_l27, order.by = date_d_test[-c(1:112)])
+
+
+# h=6
+aux_eqm_ar1_rmse_h6_l6 =   xts(aux_eqm_ar1_rmse_h6_l6, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1_rmse_h6_l10 =  xts(aux_eqm_ar1_rmse_h6_l10, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1_rmse_h6_l13 =  xts(aux_eqm_ar1_rmse_h6_l13, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1_rmse_h6_l27 =  xts(aux_eqm_ar1_rmse_h6_l27, order.by = date_d_test[-c(1:140)])
+
+aux_eqm_ar1r_rmse_h6_l6 =  xts(aux_eqm_ar1r_rmse_h6_l6, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1r_rmse_h6_l10 = xts(aux_eqm_ar1r_rmse_h6_l10, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1r_rmse_h6_l13 = xts(aux_eqm_ar1r_rmse_h6_l13, order.by = date_d_test[-c(1:140)])
+aux_eqm_ar1r_rmse_h6_l27 = xts(aux_eqm_ar1r_rmse_h6_l27, order.by = date_d_test[-c(1:140)])
+
 
 options(warn = 1)
 
@@ -1406,6 +1533,59 @@ eqm_ar1r_f_h3_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h3_l6), 28), na.rm
 eqm_np_f_h3_l6_avg <- colMeans(matrix(as.numeric(eqm_np_f_h3_l6), 28), na.rm = TRUE)
 
 
+# (Tebaldi - 2022-10-16): Incluido h = 4,5,6
+eqm_u_f_h4_l6_avg <- colMeans(matrix(as.numeric(eqm_u_f_h4_l6), 28), na.rm = TRUE)
+eqm_ar1_f_h4_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h4_l6), 28), na.rm = TRUE)
+eqm_ar1r_f_h4_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h4_l6), 28), na.rm = TRUE)
+eqm_np_f_h4_l6_avg <- colMeans(matrix(as.numeric(eqm_np_f_h4_l6), 28), na.rm = TRUE)
+
+eqm_u_f_h5_l6_avg <- colMeans(matrix(as.numeric(eqm_u_f_h5_l6), 28), na.rm = TRUE)
+eqm_ar1_f_h5_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h5_l6), 28), na.rm = TRUE)
+eqm_ar1r_f_h5_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h5_l6), 28), na.rm = TRUE)
+eqm_np_f_h5_l6_avg <- colMeans(matrix(as.numeric(eqm_np_f_h5_l6), 28), na.rm = TRUE)
+
+eqm_u_f_h6_l6_avg <- colMeans(matrix(as.numeric(eqm_u_f_h6_l6), 28), na.rm = TRUE)
+eqm_ar1_f_h6_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h6_l6), 28), na.rm = TRUE)
+eqm_ar1r_f_h6_l6_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h6_l6), 28), na.rm = TRUE)
+eqm_np_f_h6_l6_avg <- colMeans(matrix(as.numeric(eqm_np_f_h6_l6), 28), na.rm = TRUE)
+
+
+
+# (Tebaldi - 2022-10-16): Incluido l=10
+eqm_u_f_h1_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h1_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h1_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h1_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h1_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h1_l10), 28), na.rm = TRUE)
+eqm_np_f_h1_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h1_l10), 28), na.rm = TRUE)
+
+eqm_u_f_h2_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h2_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h2_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h2_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h2_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h2_l10), 28), na.rm = TRUE)
+eqm_np_f_h2_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h2_l10), 28), na.rm = TRUE)
+
+eqm_u_f_h3_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h3_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h3_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h3_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h3_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h3_l10), 28), na.rm = TRUE)
+eqm_np_f_h3_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h3_l10), 28), na.rm = TRUE)
+
+eqm_u_f_h4_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h4_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h4_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h4_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h4_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h4_l10), 28), na.rm = TRUE)
+eqm_np_f_h4_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h4_l10), 28), na.rm = TRUE)
+
+eqm_u_f_h5_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h5_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h5_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h5_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h5_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h5_l10), 28), na.rm = TRUE)
+eqm_np_f_h5_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h5_l10), 28), na.rm = TRUE)
+
+eqm_u_f_h6_l10_avg <- colMeans(matrix(as.numeric(eqm_u_f_h6_l10), 28), na.rm = TRUE)
+eqm_ar1_f_h6_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h6_l10), 28), na.rm = TRUE)
+eqm_ar1r_f_h6_l10_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h6_l10), 28), na.rm = TRUE)
+eqm_np_f_h6_l10_avg <- colMeans(matrix(as.numeric(eqm_np_f_h6_l10), 28), na.rm = TRUE)
+
+
+
+
+
 eqm_u_f_h1_l13_avg <- colMeans(matrix(as.numeric(eqm_u_f_h1_l13), 28), na.rm = TRUE)
 eqm_ar1_f_h1_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h1_l13), 28), na.rm = TRUE)
 eqm_ar1r_f_h1_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h1_l13), 28), na.rm = TRUE)
@@ -1420,6 +1600,23 @@ eqm_u_f_h3_l13_avg <- colMeans(matrix(as.numeric(eqm_u_f_h3_l13), 28), na.rm = T
 eqm_ar1_f_h3_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h3_l13), 28), na.rm = TRUE)
 eqm_ar1r_f_h3_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h3_l13), 28), na.rm = TRUE)
 eqm_np_f_h3_l13_avg <- colMeans(matrix(as.numeric(eqm_np_f_h3_l13), 28), na.rm = TRUE)
+
+# (Tebaldi - 2022-10-16): Incluido h = 4,5,6
+eqm_u_f_h4_l13_avg <- colMeans(matrix(as.numeric(eqm_u_f_h4_l13), 28), na.rm = TRUE)
+eqm_ar1_f_h4_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h4_l13), 28), na.rm = TRUE)
+eqm_ar1r_f_h4_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h4_l13), 28), na.rm = TRUE)
+eqm_np_f_h4_l13_avg <- colMeans(matrix(as.numeric(eqm_np_f_h4_l13), 28), na.rm = TRUE)
+
+eqm_u_f_h5_l13_avg <- colMeans(matrix(as.numeric(eqm_u_f_h5_l13), 28), na.rm = TRUE)
+eqm_ar1_f_h5_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h5_l13), 28), na.rm = TRUE)
+eqm_ar1r_f_h5_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h5_l13), 28), na.rm = TRUE)
+eqm_np_f_h5_l13_avg <- colMeans(matrix(as.numeric(eqm_np_f_h5_l13), 28), na.rm = TRUE)
+
+eqm_u_f_h6_l13_avg <- colMeans(matrix(as.numeric(eqm_u_f_h6_l13), 28), na.rm = TRUE)
+eqm_ar1_f_h6_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h6_l13), 28), na.rm = TRUE)
+eqm_ar1r_f_h6_l13_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h6_l13), 28), na.rm = TRUE)
+eqm_np_f_h6_l13_avg <- colMeans(matrix(as.numeric(eqm_np_f_h6_l13), 28), na.rm = TRUE)
+
 
 
 eqm_u_f_h1_l27_avg <- colMeans(matrix(as.numeric(eqm_u_f_h1_l27), 28), na.rm = TRUE)
@@ -1438,8 +1635,28 @@ eqm_ar1r_f_h3_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h3_l27), 28), na.
 eqm_np_f_h3_l27_avg <- colMeans(matrix(as.numeric(eqm_np_f_h3_l27), 28), na.rm = TRUE)
 
 
+# (Tebaldi - 2022-10-16): Incluido h = 4,5,6
+eqm_u_f_h4_l27_avg <- colMeans(matrix(as.numeric(eqm_u_f_h4_l27), 28), na.rm = TRUE)
+eqm_ar1_f_h4_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h4_l27), 28), na.rm = TRUE)
+eqm_ar1r_f_h4_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h4_l27), 28), na.rm = TRUE)
+eqm_np_f_h4_l27_avg <- colMeans(matrix(as.numeric(eqm_np_f_h4_l27), 28), na.rm = TRUE)
+
+eqm_u_f_h5_l27_avg <- colMeans(matrix(as.numeric(eqm_u_f_h5_l27), 28), na.rm = TRUE)
+eqm_ar1_f_h5_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h5_l27), 28), na.rm = TRUE)
+eqm_ar1r_f_h5_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h5_l27), 28), na.rm = TRUE)
+eqm_np_f_h5_l27_avg <- colMeans(matrix(as.numeric(eqm_np_f_h5_l27), 28), na.rm = TRUE)
+
+eqm_u_f_h6_l27_avg <- colMeans(matrix(as.numeric(eqm_u_f_h6_l27), 28), na.rm = TRUE)
+eqm_ar1_f_h6_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1_f_h6_l27), 28), na.rm = TRUE)
+eqm_ar1r_f_h6_l27_avg <- colMeans(matrix(as.numeric(eqm_ar1r_f_h6_l27), 28), na.rm = TRUE)
+eqm_np_f_h6_l27_avg <- colMeans(matrix(as.numeric(eqm_np_f_h6_l27), 28), na.rm = TRUE)
+
+
+
+
+
 for(l in loop_list){
-  for(step in 1:3){
+  for(step in 1:6){
     accuracy_eqm_u <- rmse(inflation_cpi_full[(n_max- n_test + step):n_max], get(sprintf("eqm_u_f_h%d_l%d_avg", step, l)))
     loss_eqm_u <- LossLevel(inflation_cpi_full[(n_max- n_test + step):n_max], get(sprintf("eqm_u_f_h%d_l%d_avg", step, l)))
     assign(sprintf("loss_eqm_u_h%d_l%d", step, l), loss_eqm_u)
@@ -1478,7 +1695,7 @@ for(l in loop_list){
 
 # MOST RECENT FORECAST
 for(l in loop_list){
-  for(step in 1:3){
+  for(step in 1:6){
     
     eqm_u_f_last <- matrix(as.numeric(get(sprintf("eqm_u_f_h%d_l%d", step, l))), 28)[28, ]
     eqm_ar1_f_last <- matrix(as.numeric(get(sprintf("eqm_ar1_f_h%d_l%d", step, l))), 28)[28, ]
@@ -1543,6 +1760,27 @@ legend('topleft', c('VAR (1)', 'MIDAS-ADL (l=13)', 'MIDAS-ADLr (l=6)'), lty = 1,
 title('h=3')
 
 
+par(mfrow=c(1,3))
+data = c()
+# data = cbind(aux_var_1_rmse_1, aux_eqm_ar1_rmse_1, aux_eqm_ar1r_rmse_1)
+data = cbind(aux_var_1_rmse_4, aux_eqm_ar1_rmse_h4_l13, aux_eqm_ar1r_rmse_h4_l6)
+plot.zoo(data, plot.type = 'single', col = c(1,2,4), lwd=1, xlab='Period', ylab='RSMFE')
+legend('bottomright', c('VAR (1)', 'MIDAS-ADL (l=13)', 'MIDAS-ADLr (l=6)'), lty = 1, col=c(1,2,4), nc=1, cex = 1, bty = "n")
+title('h=4')
+
+# data = cbind(aux_var_1_rmse_2, aux_eqm_ar1_rmse_2, aux_eqm_ar1r_rmse_2)
+data = cbind(aux_var_1_rmse_5, aux_eqm_ar1_rmse_h5_l13, aux_eqm_ar1r_rmse_h5_l6)
+plot.zoo(data, plot.type = 'single', col = c(1,2,4), lwd=1, xlab='Period', ylab='RSMFE')
+legend('bottomright', c('VAR (1)', 'MIDAS-ADL (l=13)', 'MIDAS-ADLr (l=6)'), lty = 1, col=c(1,2,4), nc=1, cex = 1, bty = "n")
+title('h=5')
+
+# data = cbind(aux_var_1_rmse_3, aux_eqm_ar1_rmse_3, aux_eqm_ar1r_rmse_3)
+data = cbind(aux_var_1_rmse_6, aux_eqm_ar1_rmse_h6_l13, aux_eqm_ar1r_rmse_h6_l6)
+plot.zoo(data, plot.type = 'single', col = c(1,2,4), lwd=1, xlab='Period', ylab='RSMFE')
+legend('topleft', c('VAR (1)', 'MIDAS-ADL (l=13)', 'MIDAS-ADLr (l=6)'), lty = 1, col=c(1,2,4), nc=1, cex = 1, bty = "n")
+title('h=6')
+
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #------- COMPARING MODELS --------
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1585,6 +1823,30 @@ aux <- cbind(loss_ar1_s1,
              loss_eqm_ar1r_h1_l27,
              loss_eqm_np_h1_l27)
 
+# (tebaldi - 2022-10-16): incluido lag 10
+aux2 <- cbind(loss_ar1_s1,
+             loss_ar2_s1,
+             loss_arima_s1,
+             loss_arima_nl_s1,
+             loss_var_1_s1,
+             loss_eqb_1_s1,
+             loss_eqm_u_h1_l6,
+             loss_eqm_ar1_h1_l6,
+             loss_eqm_ar1r_h1_l6,
+             loss_eqm_np_h1_l6, 
+             loss_eqm_u_h1_l10,
+             loss_eqm_ar1_h1_l10,
+             loss_eqm_ar1r_h1_l10,
+             loss_eqm_np_h1_l10,
+             loss_eqm_u_h1_l13,
+             loss_eqm_ar1_h1_l13,
+             loss_eqm_ar1r_h1_l13,
+             loss_eqm_np_h1_l13,
+             loss_eqm_u_h1_l27,
+             loss_eqm_ar1_h1_l27,
+             loss_eqm_ar1r_h1_l27,
+             loss_eqm_np_h1_l27)
+
 
 colnames(aux) <- c("loss_ar1_s1",
                    "loss_ar2_s1",
@@ -1605,7 +1867,31 @@ colnames(aux) <- c("loss_ar1_s1",
                    "loss_eqm_ar1r_h1_l27",
                    "loss_eqm_np_h1_l27")
 
+colnames(aux2) <- c("loss_ar1_s1",
+                   "loss_ar2_s1",
+                   "loss_arima_s1",
+                   "loss_arima_nl_s1",
+                   "loss_var_1_s1",
+                   "loss_eqb_1_s1",
+                   "loss_eqm_u_h1_l6",
+                   "loss_eqm_ar1_h1_l6",
+                   "loss_eqm_ar1r_h1_l6",
+                   "loss_eqm_np_h1_l6", 
+                   "loss_eqm_u_h1_l10",
+                   "loss_eqm_ar1_h1_l10",
+                   "loss_eqm_ar1r_h1_l10",
+                   "loss_eqm_np_h1_l10",
+                   "loss_eqm_u_h1_l13",
+                   "loss_eqm_ar1_h1_l13",
+                   "loss_eqm_ar1r_h1_l13",
+                   "loss_eqm_np_h1_l13",
+                   "loss_eqm_u_h1_l27",
+                   "loss_eqm_ar1_h1_l27",
+                   "loss_eqm_ar1r_h1_l27",
+                   "loss_eqm_np_h1_l27")
+
 MCSprocedure(aux)
+MCSprocedure(aux2)
 
 
 #%%%%%%%%%%%%%%%%%%
